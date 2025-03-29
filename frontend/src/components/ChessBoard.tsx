@@ -2,7 +2,8 @@ import { Chess, Color, PieceSymbol, Square } from "chess.js";
 import { useState } from "react";
 import { MOVE } from "../screens/Game";
 
-const ChessBoard = ({ board, socket, setBoard, chess }: {
+
+const ChessBoard = ({ board, socket, setBoard, chess, color, setMyTurn }: {
   board: ({
     square: Square;
     type: PieceSymbol;
@@ -14,10 +15,13 @@ const ChessBoard = ({ board, socket, setBoard, chess }: {
     type: PieceSymbol;
     color: Color;
   } | null)[][]>>,
-  chess: Chess
+  chess: Chess,
+  color: Color,
+  setMyTurn: React.Dispatch<React.SetStateAction<boolean>>
 }) => {
 
   const [from, setFrom] = useState<null | Square>(null);
+  const [clicked, setClicked] = useState('');
 
   return (
     <div className="">
@@ -26,9 +30,14 @@ const ChessBoard = ({ board, socket, setBoard, chess }: {
           {row.map((square, j) => {
             const squareRepresentation = String.fromCharCode(97 + (j % 8)) + "" + (8 - i) as Square;
             // console.log(squareRepresentation); 
+            
             return <div onClick={() => {
+              
               if (!from) {
-                setFrom(squareRepresentation);
+                if(square?.color === color){
+                  setFrom(squareRepresentation);
+                  setClicked(squareRepresentation);
+                } 
               } else {
                 socket.send(JSON.stringify({
                   type: MOVE,
@@ -38,15 +47,19 @@ const ChessBoard = ({ board, socket, setBoard, chess }: {
                   }
                 }))
                 setFrom(null);
+                setClicked('');
+                const prevBoard = chess.fen();
                 chess.move({
                   from,
                   to: squareRepresentation
                 });
+                const afterBoard = chess.fen();
+                if(prevBoard !== afterBoard) setMyTurn(false);
                 setBoard(chess.board());
                 console.log({ from, to: squareRepresentation });
               }
             }}
-              key={j} className={`w-16 h-16 ${((i + j) % 2) ? 'bg-green-500' : 'bg-green-200'}`}>
+              key={j} className={`w-16 h-16  ${clicked == squareRepresentation? 'bg-red-400': `${((i + j) % 2) ? 'bg-green-500' : 'bg-green-200'}`}`}>
               <div className="w-full h-full pb-3 flex justify-center items-center">
                 {square ? <img className="w-7" src={`/${square?.color === 'b' ? `B_${square?.type?.toUpperCase()}` : `W_${square?.type?.toUpperCase()}` }.png`}/> : null}
               </div>
