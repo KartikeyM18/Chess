@@ -57,11 +57,11 @@ const Game = () => {
         <div className="flex justify-center">
             <div className="pt-8 max-w-screen-lg w-full">
 
-                <div className="grid grid-cols-6 gap-4 w-full relative">
-                    <div className="col-span-4 w-full flex justify-center">
+                <div className="grid md:grid-cols-6 gap-4 w-full relative">
+                    <div className="md:col-span-4 w-full flex justify-center">
                         <ChessBoard chess={chess} setBoard={setBoard} board={board} socket={socket} color={color} setMyTurn={setMyTurn} />
                     </div>
-                    <div className="col-span-2 w-full flex justify-center bg-slate-800">
+                    <div className="md:col-span-2 w-full flex justify-center bg-slate-800">
                         <div className="pt-8">
 
                             {gameStarted ?

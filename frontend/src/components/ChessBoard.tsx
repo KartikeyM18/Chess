@@ -59,9 +59,9 @@ const ChessBoard = ({ board, socket, setBoard, chess, color, setMyTurn }: {
                 console.log({ from, to: squareRepresentation });
               }
             }}
-              key={j} className={`w-16 h-16  ${clicked == squareRepresentation? 'bg-red-400': `${((i + j) % 2) ? 'bg-green-500' : 'bg-green-200'}`}`}>
+              key={j} className={`md:w-16 md:h-16 w-11 h-11  ${clicked == squareRepresentation? 'bg-red-400': `${((i + j) % 2) ? 'bg-green-500' : 'bg-green-200'}`}`}>
               <div className="w-full h-full pb-3 flex justify-center items-center">
-                {square ? <img className="w-7" src={`/${square?.color === 'b' ? `B_${square?.type?.toUpperCase()}` : `W_${square?.type?.toUpperCase()}` }.png`}/> : null}
+                {square ? <img className="md:w-7 w-5 " src={`/${square?.color === 'b' ? `B_${square?.type?.toUpperCase()}` : `W_${square?.type?.toUpperCase()}` }.png`}/> : null}
               </div>
             </div>
           })}
