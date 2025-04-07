@@ -24,7 +24,10 @@ const ChessBoard = ({ board, socket, setBoard, chess, color, setMyTurn }: {
   const [clicked, setClicked] = useState('');
 
   return (
-    <div className="">
+    <div className="p-[2px] rounded-xl overflow-hidden bg-white">
+      <div className="overflow-hidden rounded-xl">
+        
+      
       {board.map((row, i) => {
         return <div key={i} className="flex">
           {row.map((square, j) => {
@@ -59,7 +62,7 @@ const ChessBoard = ({ board, socket, setBoard, chess, color, setMyTurn }: {
                 console.log({ from, to: squareRepresentation });
               }
             }}
-              key={j} className={`md:w-16 md:h-16 w-11 h-11  ${clicked == squareRepresentation? 'bg-red-400': `${((i + j) % 2) ? 'bg-green-500' : 'bg-green-200'}`}`}>
+              key={j} className={`md:w-16 md:h-16 w-11 h-11  ${clicked == squareRepresentation? 'bg-red-400': `${((i + j) % 2) ? 'bg-purple-500' : 'bg-black'}`}`}>
               <div className="w-full h-full pb-3 flex justify-center items-center">
                 {square ? <img className="md:w-7 w-5 " src={`/${square?.color === 'b' ? `B_${square?.type?.toUpperCase()}` : `W_${square?.type?.toUpperCase()}` }.png`}/> : null}
               </div>
@@ -67,6 +70,7 @@ const ChessBoard = ({ board, socket, setBoard, chess, color, setMyTurn }: {
           })}
         </div>
       })}
+      </div>
     </div>
   )
 }

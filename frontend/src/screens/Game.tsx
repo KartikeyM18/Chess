@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import Button from "../components/Button"
 import ChessBoard from "../components/ChessBoard"
 import { useSocket } from "../hooks/useSocket"
 import { Chess, Color } from "chess.js";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import Loader from "@/components/Loader";
 
 export const INIT_GAME = "init_game";
 export const MOVE = "move";
@@ -20,6 +21,7 @@ const Game = () => {
     const [color, setColor] = useState<Color>('w');
     const [gameOver, setGameOver] = useState(false);
     const [myTurn, setMyTurn] = useState(true);
+    const [buttonClicked, setButtonClicked] = useState(false);
 
     useEffect(() => {
         if (!socket) return;
@@ -51,7 +53,7 @@ const Game = () => {
     }, [socket])
     const navigate = useNavigate();
 
-    if (!socket) return <div>Connecting...</div>
+    if (!socket) return <Loader />
 
     return (
         <div className="flex justify-center">
@@ -62,13 +64,13 @@ const Game = () => {
                         <ChessBoard chess={chess} setBoard={setBoard} board={board} socket={socket} color={color} setMyTurn={setMyTurn} />
                     </div>
                     <div className="md:col-span-2 w-full flex justify-center bg-slate-800">
-                        <div className="pt-8">
+                        <div className="p-8">
 
                             {gameStarted ?
                                 <div className="flex flex-col items-center">
                                     <h1 className="text-white text-3xl font-bold">You are {color === 'b' ? 'BLACK' : 'WHITE'} </h1>
                                     <h2 className="text-2xl text-red-500 font-bold">
-                                        {myTurn? 'Your turn': '\u200B'}  
+                                        {myTurn ? 'Your turn' : '\u200B'}
                                     </h2>
                                     {chess.history().map((move, index) => (
                                         <p key={index} className="text-white text-xl font-semibold">{move}</p>
@@ -76,14 +78,23 @@ const Game = () => {
                                 </div>
 
                                 :
-                                <Button onClick={() => {
-                                    socket.send(JSON.stringify({
-                                        type: INIT_GAME,
+                                <>
+                                    {buttonClicked ?
+                                        <p className="text-purple-300 text-2xl font-semibold">
+                                            Waiting for Opponent...
+                                        </p>
+                                        :
+                                        <Button onClick={() => {
+                                            setButtonClicked(true);
+                                            socket.send(JSON.stringify({
+                                                type: INIT_GAME,
 
-                                    }))
-                                }}>
-                                    Play
-                                </Button>
+                                            }))
+                                        }}>
+                                            Play
+                                        </Button>}
+                                </>
+
                             }
                         </div>
                     </div>
